@@ -1,0 +1,27 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "type": "cppbuild",
+            "label": "Build for debugging",
+            "command": "C:/Program Files/LLVM/bin/clang++.exe",
+            "args": [
+                "${workspaceFolder}/Tetris.c",
+                "-o",
+                "${workspaceFolder}/Tetris.exe",
+                "-g"
+            ],
+            "options": {
+                "cwd": "C:/Program Files/LLVM/bin"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "Build for debugging with Clang++"
+        }
+    ]
+}

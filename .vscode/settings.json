@@ -1,0 +1,12 @@
+{
+    "C_Cpp.errorSquiggles": "disabled",
+    "cmake.configureOnOpen": true,
+    "files.associations": {
+        "stdio.h": "c",
+        "tetris.h": "c",
+        "stage.h": "c",
+        "raylib.h": "c",
+        "string.h": "c",
+        "time.h": "c"
+    }
+}

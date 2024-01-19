@@ -1,0 +1,1 @@
+clang.exe -o bin\Tetris.exe Tetris.c src\*.c -lraylibdll -Iinclude
