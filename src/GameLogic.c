@@ -4,6 +4,7 @@
 int score = 0;
 float speed = 0;
 extern int stage[];
+extern const int *tetrominoTypes[7][4];
 
 
 void ResetLines(int startLineY)
@@ -62,4 +63,88 @@ void DeleteLines()
     }
 
     UnloadSound(LineClearSFX);
+}
+
+
+void CheckInput()
+{
+    if (IsKeyPressed(KEY_SPACE))
+        {
+            const int lastRotation = currentRotation;
+
+            currentRotation++;
+
+            if (currentRotation > 3)
+            {
+                currentRotation = 0;
+            }
+
+            if (CheckCollision(currentTetrominoX,currentTetrominoY,tetrominoTypes[currentTetrominoType][currentRotation]))
+            {
+                PlaySound(PieceRotateFailSFX);
+                currentRotation = lastRotation;
+            }
+            else
+                PlaySound(PieceRotateRSFX);
+        }
+
+        if (IsKeyPressed(KEY_RIGHT))
+        {
+            // No need to check overflow, wall is your protector
+            if (!CheckCollision(currentTetrominoX+1,currentTetrominoY,tetrominoTypes[currentTetrominoType][currentRotation]))
+            {
+                PlaySound(PieceMoveSFX);
+                currentTetrominoX++;
+            }
+        }
+        if (IsKeyPressed(KEY_LEFT))
+        {
+            // No need to check overflow, wall is your protector
+            if (!CheckCollision(currentTetrominoX-1,currentTetrominoY,tetrominoTypes[currentTetrominoType][currentRotation]))
+            {
+                PlaySound(PieceMoveSFX);
+                currentTetrominoX--;
+            }
+        }
+
+        if(timeToMoveTetrominoDown - speed <= 0 || IsKeyPressed(KEY_DOWN))
+        {            
+            if(!CheckCollision(currentTetrominoX,currentTetrominoY+1,tetrominoTypes[currentTetrominoType][currentRotation]))
+            {
+                PlaySound(PieceMoveSFX);
+                currentTetrominoY++;
+                timeToMoveTetrominoDown = moveTetrominoDownTimer;
+            }
+
+            else
+            {
+                for(int y = 0; y < TETROMINO_SIZE; y++)
+                {
+                    for(int x = 0; x < TETROMINO_SIZE; x++)
+                    {
+                        const int offset = y * TETROMINO_SIZE + x;
+
+                        const int *tetromino = tetrominoTypes[currentTetrominoType][currentRotation];
+
+                        if(tetromino[offset] == 1)
+                        {
+                            const int offset_stage = (y + currentTetrominoY) * STAGE_WIDTH + (x + currentTetrominoX);
+
+                            stage[offset_stage] = currentColor + 1;
+                            PlaySound(PieceTouchDownSFX);
+                        }
+                    }
+                }
+
+                DeleteLines();
+
+                currentTetrominoX = tetrominoStartX;
+                currentTetrominoY = tetrominoStartY;
+
+                currentTetrominoType = GetRandomValue(0, 6);
+                currentRotation = 0;
+                currentColor = GetRandomValue(0, 7);
+                score += 10;
+            }
+        }
 }
